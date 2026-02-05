@@ -31,6 +31,8 @@ jupyterlab_vim = ">=4.1.4,<5"
 seaborn = ">=0.13.2,<0.14"
 mob_suite = ">=3.0.0,<4"
 numpy = ">=2.4.1,<3"
+duckdb = ">=1.4.4,<2"
+tqdm = ">=4.67.3,<5"
 
 [tasks]
 build = "pip install -e ."
