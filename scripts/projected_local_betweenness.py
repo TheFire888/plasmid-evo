@@ -42,16 +42,17 @@ def get_local_betweenness(g, props, neighbourhood_size=3):
             current_level_nodes = next_level_nodes
         return all_neighbors
 
-    for node in tqdm(g.vertices()):
-        k_order_neighbours = get_k_order_neighbours(g, node, neighbourhood_size)
-        k_order_filter = g.new_vertex_property('bool')
-        for neighbour in k_order_neighbours:
-            k_order_filter[neighbour] = True
+    with open(output_dir / 'local_bet.tsv', 'w') as f_out:
+        for node in tqdm(g.vertices()):
+            k_order_neighbours = get_k_order_neighbours(g, node, neighbourhood_size)
+            k_order_filter = g.new_vertex_property('bool')
+            for neighbour in k_order_neighbours:
+                k_order_filter[neighbour] = True
 
-        subgraph = gt.GraphView(g, vfilt=k_order_filter)
-        vb, _ = gt.betweenness(subgraph)
+            subgraph = gt.GraphView(g, vfilt=k_order_filter)
+            vb, _ = gt.betweenness(subgraph)
 
-        print(f"{props[0][node]}\t{props[1][node]}\t{vb[node]}", flush=True)
+            f_out.write(f"{props[0][node]}\t{props[1][node]}\t{vb[node]}\n")
 
 get_local_betweenness(pg, props)
 
