@@ -25,8 +25,6 @@ proj = g.new_vp('bool', vals=[is_plasmid(g, v) for v in g.vertices()])
 pg, props = gt.graph_projection(g, proj, props=[g.vertex_index, g.vp.ids])
 
 def get_local_betweenness(g, props, neighbourhood_size=3):
-    local_betweenness = []
-    node_ids = [] # Armazena os IDs para o DataFrame
 
     def get_k_order_neighbours(g, start_vertex, K):
         visited = {start_vertex}
@@ -53,7 +51,7 @@ def get_local_betweenness(g, props, neighbourhood_size=3):
         subgraph = gt.GraphView(g, vfilt=k_order_filter)
         vb, _ = gt.betweenness(subgraph)
 
-        print(f"{props[0][node]}\t{props[1][node]}\t{vb[node]}")
+        print(f"{props[0][node]}\t{props[1][node]}\t{vb[node]}", flush=True)
 
 get_local_betweenness(pg, props)
 
