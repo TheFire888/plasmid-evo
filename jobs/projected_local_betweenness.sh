@@ -12,4 +12,4 @@ export PATH="/home/lleal/.pixi/bin:$PATH"
 
 echo -e "\n## Job ${SLURM_JOB_ID} iniciado em $(date +'%d-%m-%Y as %T') ##\n"
 
-pixi run scripts/projected_local_betweenness.py
+pixi run python scripts/projected_local_betweenness.py
