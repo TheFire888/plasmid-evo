@@ -36,8 +36,15 @@ def analyse(output_dir: Path):
     logging.info("Minimizing nested blockmodel...")
     state = gt.minimize_nested_blockmodel_dl(g)
 
+    gt.mcmc_anneal(
+        state,
+        beta_range=(0.5, 30),
+        niter=2000,
+        mcmc_equilibrate_args=dict(force_niter=20)
+    )
+
     def save_paths(g, state):
-        output_path = output_dir / 'cluster_paths.tsv'
+        output_path = output_dir / 'otimized_cluster_paths.tsv'
         lvls = state.get_levels()
         avail = []
 
