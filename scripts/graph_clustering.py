@@ -38,13 +38,13 @@ def analyse(output_dir: Path):
 
     gt.mcmc_anneal(
         state,
-        beta_range=(0.5, 30),
-        niter=2000,
-        mcmc_equilibrate_args=dict(force_niter=20)
+        beta_range=(1, 10),
+        niter=1000,
+        mcmc_equilibrate_args=dict(force_niter=10)
     )
 
     def save_paths(g, state):
-        output_path = output_dir / 'otimized_cluster_paths.tsv'
+        output_path = output_dir / 'subotimized_cluster_paths.tsv'
         lvls = state.get_levels()
         avail = []
 

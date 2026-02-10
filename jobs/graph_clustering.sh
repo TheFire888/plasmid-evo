@@ -2,7 +2,7 @@
 #SBATCH --job-name=graph_clu
 #SBATCH --partition=max50
 #SBATCH --ntasks=1
-#SBATCH --mem=64GB
+#SBATCH --mem=32GB
 #SBATCH --cpus-per-task=8
 #SBATCH --time=100:00:00
 #SBATCH --output=out/graph_clu%j.out
