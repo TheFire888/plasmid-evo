@@ -42,16 +42,17 @@ def analyse(output_dir: Path):
         state,
         beta_range=(0.5, 30),
         niter=2000,
-        mcmc_equilibrate_args=dict(force_niter=40)
+        mcmc_equilibrate_args=dict(force_niter=20)
     )
 
     block_state = state.get_bs()
 
-    with open(states_dir / 'over_otimized.pkl', 'wb') as fh:
+    logging.info("Saving output...")
+    with open(states_dir / 'otimized.pkl', 'wb') as fh:
         pickle.dump(block_state, fh)
 
     def save_paths(g, state):
-        output_path = output_dir / 'over_otimized_cluster_paths.tsv'
+        output_path = output_dir / 'otimized_cluster_paths_02.tsv'
         lvls = state.get_levels()
         avail = []
 
@@ -74,7 +75,6 @@ def analyse(output_dir: Path):
 
                 f_out.write(f"{'\t'.join(path)}\n")
 
-    logging.info("Saving output...")
     save_paths(g, state)
 
 
