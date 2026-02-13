@@ -17,12 +17,13 @@ def log_memory():
     while True:
         mem = process.memory_info().rss / 1024**2
         logging.debug(f"Monitor: {mem:.2f} MB em uso")
-        time.sleep(10)
+        time.sleep(60)
 
 threading.Thread(target=log_memory, daemon=True).start()
 
 def analyse(output_dir: Path):
     graph_ncol = output_dir / 'graph.ncol'
+    states_dir = output_dir / 'block_states'
 
     def edges(tmp_file):
         with open(tmp_file, 'r', encoding='utf-8') as f:
@@ -36,15 +37,21 @@ def analyse(output_dir: Path):
     logging.info("Minimizing nested blockmodel...")
     state = gt.minimize_nested_blockmodel_dl(g)
 
+    logging.info("Optimizing...")
     gt.mcmc_anneal(
         state,
-        beta_range=(1, 10),
-        niter=1000,
-        mcmc_equilibrate_args=dict(force_niter=10)
+        beta_range=(0.5, 30),
+        niter=2000,
+        mcmc_equilibrate_args=dict(force_niter=40)
     )
 
+    block_state = state.get_bs()
+
+    with open(states_dir / 'over_otimized.pkl', 'wb') as fh:
+        pickle.dump(block_state, fh)
+
     def save_paths(g, state):
-        output_path = output_dir / 'subotimized_cluster_paths.tsv'
+        output_path = output_dir / 'over_otimized_cluster_paths.tsv'
         lvls = state.get_levels()
         avail = []
 
@@ -69,6 +76,7 @@ def analyse(output_dir: Path):
 
     logging.info("Saving output...")
     save_paths(g, state)
+
 
 @click.command()
 @click.argument("output_dir", type=click.Path(exists=True))
