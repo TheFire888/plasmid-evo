@@ -42,18 +42,18 @@ def analyse(output_dir: Path):
     gt.mcmc_anneal(
         state,
         beta_range=(0.5, 30),
-        niter=2000,
+        niter=4000,
         mcmc_equilibrate_args=dict(force_niter=20)
     )
 
     block_state = state.get_bs()
 
     logging.info("Saving output...")
-    with open(states_dir / 'otimized.pkl', 'wb') as fh:
+    with open(states_dir / 'over_otimized.pkl', 'wb') as fh:
         pickle.dump(block_state, fh)
 
     def save_paths(g, state):
-        output_path = output_dir / 'otimized_cluster_paths_02.tsv'
+        output_path = output_dir / 'over_otimized_cluster_paths_02.tsv'
         lvls = state.get_levels()
         avail = []
 
