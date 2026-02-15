@@ -5,6 +5,7 @@ import time
 import os
 import logging
 import csv
+import pickle
 
 import click
 import graph_tool.all as gt
