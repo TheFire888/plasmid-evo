@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --mem=32GB
 #SBATCH --cpus-per-task=1
-#SBATCH --time=100:00:00
+#SBATCH --time=190:00:00
 #SBATCH --output=out/graph_clu%j.out
 #SBATCH --error=err/graph_clu%j.err
 
