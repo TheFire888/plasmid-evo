@@ -38,10 +38,10 @@ def analyse(output_dir: Path):
     logging.info("Equilibrating Markov chain...")
     gt.mcmc_equilibrate(state, wait=100, mcmc_args=dict(niter=10))
 
-    bs = [] # collect some partitions
+    samples = [] # collect some partitions
     def collect_partitions(s):
-        global bs
-        bs.append(s.get_bs())
+        nonlocal samples
+        samples.append(s.get_bs())
 
     # Now we collect partitions for exactly 10,000 sweeps, at intervals
     # of 10 sweeps:
