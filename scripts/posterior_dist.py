@@ -36,7 +36,7 @@ def analyse(output_dir: Path):
     state = gt.NestedBlockState(g, bs=bs)
 
     logging.info("Equilibrating Markov chain...")
-    gt.mcmc_equilibrate(state, wait=100, max_niter=2000, mcmc_args=dict(niter=10))
+    gt.mcmc_equilibrate(state, wait=10, max_niter=2000, mcmc_args=dict(niter=10))
 
     samples = [] # collect some partitions
     def collect_partitions(s):
