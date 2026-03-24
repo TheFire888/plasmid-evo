@@ -36,11 +36,12 @@ def analyse(output_dir: Path):
     state = gt.NestedBlockState(g, bs=bs)
 
     logging.info("Equilibrating Markov chain...")
-    gt.mcmc_equilibrate(state, wait=100, mcmc_args=dict(niter=10))
+    gt.mcmc_equilibrate(state, wait=100, max_niter=2000, mcmc_args=dict(niter=10))
 
     samples = [] # collect some partitions
     def collect_partitions(s):
         nonlocal samples
+        logging.info(f"Collected {len(samples)} samples")
         samples.append(s.get_bs())
 
     # Now we collect partitions for exactly 10,000 sweeps, at intervals
