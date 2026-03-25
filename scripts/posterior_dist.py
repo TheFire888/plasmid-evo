@@ -52,7 +52,7 @@ def analyse(output_dir: Path):
 
     logging.info("Saving partitions...")
     with open(output_dir / "posterior_samples.pkl", "wb") as f:
-        pickle.dump(bs, f)
+        pickle.dump(samples, f)
 
 @click.command()
 @click.argument("output_dir", type=click.Path(exists=True))
