@@ -100,6 +100,7 @@ for i, unique_gene in tqdm(enumerate(genes)):
 
         cluster_mask = (df[lvl] == cid)
 
+        logging.info(f"Calculating ami for {unique_gene} in {cid}")
         ami = adjusted_mutual_info_score(gene_mask, cluster_mask)
         if ami > 0.05:
             ls.append((unique_gene, cid, ami))
