@@ -72,15 +72,37 @@ df = presence.join(
 ls = []
 lvl = 'h0'
 
-for i, unique_gene in tqdm(enumerate(df['cluster_rep'].unique())):
-    logging.info(f"{i}: calculating AMI for {unique_gene}")
-    gene_mask = (df['cluster_rep'] == unique_gene).to_numpy()
+gene_in_cid = (
+    df.group_by(lvl)
+    .agg(pl.col('cluster_rep').unique())
+    .to_dict(as_series=False)
+)
 
-    for j, cid in tqdm(enumerate(df[lvl].unique())):
-        cluster_mask = (df[lvl] == cid).to_numpy()
+cid_to_genes = {
+    cid: set(genes)
+    for cid, genes in zip(gene_in_cid[lvl], gene_in_cid['cluster_rep'])
+}
+
+genes = df['cluster_rep'].unique()
+print(len(genes))
+cids = df[lvl].unique()
+
+gene_in_cid = df.group_by(pl.col('h0')).agg(pl.col('cluster_rep'))
+
+for i, unique_gene in tqdm(enumerate(genes)):
+    if i > 4000: break
+
+    gene_mask = (df['cluster_rep'] == unique_gene)
+
+    for j, cid in enumerate(cids):
+        if unique_gene not in cid_to_genes[cid]:
+            continue
+
+        cluster_mask = (df[lvl] == cid)
 
         ami = adjusted_mutual_info_score(gene_mask, cluster_mask)
-        ls.append((unique_gene, cid, ami))
+        if ami > 0.05:
+            ls.append((unique_gene, cid, ami))
 
 ami_df = pl.DataFrame(ls, orient="row")
 

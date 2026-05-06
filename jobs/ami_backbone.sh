@@ -2,7 +2,7 @@
 #SBATCH --job-name=backbone
 #SBATCH --partition=max50
 #SBATCH --ntasks=1
-#SBATCH --mem=40GB
+#SBATCH --mem=200GB
 #SBATCH --cpus-per-task=1
 #SBATCH --time=24:00:00
 #SBATCH --output=out/backbone%j.out
@@ -16,4 +16,3 @@ WORKDIR="/scratch/local/lleal/plasmid_evo"
 SCRIPTSDIR="scripts/"
 
 pixi run python "${SCRIPTSDIR}/ami_backbone.py"
-
