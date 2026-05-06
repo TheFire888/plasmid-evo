@@ -90,8 +90,6 @@ cids = df[lvl].unique()
 gene_in_cid = df.group_by(pl.col('h0')).agg(pl.col('cluster_rep'))
 
 for i, unique_gene in tqdm(enumerate(genes)):
-    if i > 4000: break
-
     gene_mask = (df['cluster_rep'] == unique_gene)
 
     for j, cid in enumerate(cids):
