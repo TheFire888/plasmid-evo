@@ -88,7 +88,7 @@ cids = df[lvl].unique()
 
 gene_in_cid = df.group_by(pl.col('h0')).agg(pl.col('cluster_rep'))
 
-with ami_path.open(mode='w', buffering=0) as f_out:
+with ami_path.open(mode='wb', buffering=0) as f_out:
     for i, unique_gene in enumerate(genes):
         logging.info(f"{i} {unique_gene}")
         gene_mask = (df['cluster_rep'].list.contains(unique_gene))
@@ -101,5 +101,5 @@ with ami_path.open(mode='w', buffering=0) as f_out:
 
             ami = adjusted_mutual_info_score(gene_mask, cluster_mask)
             if ami > 0.5:
-                f_out.write(f'{unique_gene}\t{cid}\t{ami}\n')
+                f_out.write(f'{unique_gene}\t{cid}\t{ami}\n'.encode("utf-8"))
                 logging.info(f"Significant ami for {unique_gene} in {cid}!")
