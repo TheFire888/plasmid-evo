@@ -90,7 +90,6 @@ gene_in_cid = df.group_by(pl.col('h0')).agg(pl.col('cluster_rep'))
 
 with ami_path.open(mode='w') as f_out:
     for i, unique_gene in enumerate(genes):
-        if i > 40: break
         logging.info(f"{i} {unique_gene}")
         gene_mask = (df['cluster_rep'].list.contains(unique_gene))
 
