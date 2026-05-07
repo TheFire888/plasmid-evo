@@ -67,12 +67,15 @@ df = presence.join(
     left_on="plasmid",
     right_on="name",
     how="inner"
-).collect(engine='streaming')
+).group_by(pl.col('plasmid')).agg(
+    pl.col('cluster_rep'), pl.col('h0').mode().first()
+).sort('plasmid').collect(engine='streaming')
 
 lvl = 'h0'
 
 gene_in_cid = (
-    df.group_by(lvl)
+    df.explode('cluster_rep')
+    .group_by(lvl)
     .agg(pl.col('cluster_rep').unique())
     .to_dict(as_series=False)
 )
@@ -82,7 +85,7 @@ cid_to_genes = {
     for cid, genes in zip(gene_in_cid[lvl], gene_in_cid['cluster_rep'])
 }
 
-genes = df['cluster_rep'].unique()
+genes = df.explode('cluster_rep').get_column('cluster_rep').unique()
 print(len(genes))
 cids = df[lvl].unique()
 
@@ -91,7 +94,7 @@ gene_in_cid = df.group_by(pl.col('h0')).agg(pl.col('cluster_rep'))
 with open(ami_path, 'w') as f_out:
     for i, unique_gene in enumerate(genes):
         logging.info(f"{i} {unique_gene}")
-        gene_mask = (df['cluster_rep'] == unique_gene)
+        gene_mask = (df['cluster_rep'].list.contains(unique_gene))
 
         for j, cid in enumerate(cids):
             if unique_gene not in cid_to_genes[cid]:
@@ -101,6 +104,6 @@ with open(ami_path, 'w') as f_out:
 
             logging.info(f"Calculating ami for {unique_gene} in {cid}")
             ami = adjusted_mutual_info_score(gene_mask, cluster_mask)
-            if ami > 0.05:
+            if ami > 0.5:
                 logging.info(f"Significant ami for {unique_gene} in {cid}!")
                 f_out.write(f'{unique_gene}\t{cid}\t{ami}\n')
