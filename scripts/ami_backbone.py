@@ -1,7 +1,6 @@
 import polars as pl
 import seaborn as sns
 import matplotlib.pyplot as plt
-import taxopy as tx
 import pickle
 import csv
 import graph_tool.all as gt
@@ -16,8 +15,6 @@ logging.basicConfig(
 from sklearn.metrics import adjusted_mutual_info_score
 from pathlib import Path
 from tqdm import tqdm
-
-taxdb = tx.TaxDb()
 
 project_root = Path("/home/lleal/programs/plasmidEvo/")
 data_dir = project_root / 'data'
