@@ -101,5 +101,5 @@ with ami_path.open(mode='w') as f_out:
 
             ami = adjusted_mutual_info_score(gene_mask, cluster_mask)
             if ami > 0.5:
-                logging.info(f"Significant ami for {unique_gene} in {cid}!")
                 f_out.write(f'{unique_gene}\t{cid}\t{ami}\n')
+                logging.info(f"Significant ami for {unique_gene} in {cid}!")
