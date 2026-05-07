@@ -69,7 +69,6 @@ df = presence.join(
     how="inner"
 ).collect(engine='streaming')
 
-ls = []
 lvl = 'h0'
 
 gene_in_cid = (
@@ -89,20 +88,19 @@ cids = df[lvl].unique()
 
 gene_in_cid = df.group_by(pl.col('h0')).agg(pl.col('cluster_rep'))
 
-for i, unique_gene in tqdm(enumerate(genes)):
-    gene_mask = (df['cluster_rep'] == unique_gene)
+with open(ami_path, 'w') as f_out:
+    for i, unique_gene in enumerate(genes):
+        logging.info(f"{i} {unique_gene}")
+        gene_mask = (df['cluster_rep'] == unique_gene)
 
-    for j, cid in enumerate(cids):
-        if unique_gene not in cid_to_genes[cid]:
-            continue
+        for j, cid in enumerate(cids):
+            if unique_gene not in cid_to_genes[cid]:
+                continue
 
-        cluster_mask = (df[lvl] == cid)
+            cluster_mask = (df[lvl] == cid)
 
-        logging.info(f"Calculating ami for {unique_gene} in {cid}")
-        ami = adjusted_mutual_info_score(gene_mask, cluster_mask)
-        if ami > 0.05:
-            ls.append((unique_gene, cid, ami))
-
-ami_df = pl.DataFrame(ls, orient="row")
-
-ami_df.write_csv(ami_path, separator='\t')
+            logging.info(f"Calculating ami for {unique_gene} in {cid}")
+            ami = adjusted_mutual_info_score(gene_mask, cluster_mask)
+            if ami > 0.05:
+                logging.info(f"Significant ami for {unique_gene} in {cid}!")
+                f_out.write(f'{unique_gene}\t{cid}\t{ami}\n')
