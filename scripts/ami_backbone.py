@@ -29,7 +29,7 @@ metadata_path = project_root / 'data' / 'sequence_metadata.tsv'
 conj_path = output_dir / 'conjscan.tsv'
 mob_path = output_dir / 'plasmids_simple_mob_typer.tsv'
 graph_path = output_dir / 'graph.ncol'
-ami_path = output_dir / 'ami.tsv'
+ami_path = output_dir / 'ami_after_400000.tsv'
 
 tree_df = pl.scan_csv(tree_file, separator='\t', has_header=False, new_columns=[
     'id', 'name', 'h0', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9'
@@ -90,6 +90,7 @@ gene_in_cid = df.group_by(pl.col('h0')).agg(pl.col('cluster_rep'))
 
 with ami_path.open(mode='wb', buffering=0) as f_out:
     for i, unique_gene in enumerate(genes):
+        if i < 400000: continue
         logging.info(f"{i} {unique_gene}")
         gene_mask = (df['cluster_rep'].list.contains(unique_gene))
 
