@@ -58,7 +58,7 @@ presence = (
     .select(["cluster_rep", "plasmid", "present"])
 )
 
-lvl = 'h2'
+lvl = 'h3'
 ami_path = output_dir / f'{lvl}_ami.tsv'
 
 df = presence.join(
