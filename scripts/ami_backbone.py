@@ -29,8 +29,6 @@ metadata_path = project_root / 'data' / 'sequence_metadata.tsv'
 conj_path = output_dir / 'conjscan.tsv'
 mob_path = output_dir / 'plasmids_simple_mob_typer.tsv'
 graph_path = output_dir / 'graph.ncol'
-first_ami_path = output_dir / 'ami.tsv'
-ami_path = output_dir / 'ami_after_400000.tsv'
 
 tree_df = pl.scan_csv(tree_file, separator='\t', has_header=False, new_columns=[
     'id', 'name', 'h0', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'h7', 'h8', 'h9'
@@ -60,16 +58,17 @@ presence = (
     .select(["cluster_rep", "plasmid", "present"])
 )
 
+lvl = 'h1'
+ami_path = output_dir / f'{lvl}_ami.tsv'
+
 df = presence.join(
     plasmids_df,
     left_on="plasmid",
     right_on="name",
     how="inner"
 ).group_by(pl.col('plasmid')).agg(
-    pl.col('cluster_rep'), pl.col('h0').mode().first()
+    pl.col('cluster_rep'), pl.col(lvl).mode().first()
 ).sort('plasmid').collect(engine='streaming')
-
-lvl = 'h0'
 
 gene_in_cid = (
     df.explode('cluster_rep')
@@ -89,11 +88,10 @@ cids = df[lvl].unique()
 
 gene_in_cid = df.group_by(pl.col('h0')).agg(pl.col('cluster_rep'))
 
-genes_done = pl.read_csv(first_ami_path, separator='\t', has_header=False, new_columns=['cluster_rep', 'h0', 'ami']).select(['cluster_rep']).rows()
+# genes_done = pl.read_csv(first_ami_path, separator='\t', has_header=False, new_columns=['cluster_rep', 'h0', 'ami']).select(['cluster_rep']).rows()
 
 with ami_path.open(mode='wb', buffering=0) as f_out:
     for i, unique_gene in enumerate(genes):
-        if unique_gene in genes_done: continue
         logging.info(f"{i} {unique_gene}")
         gene_mask = (df['cluster_rep'].list.contains(unique_gene))
 
