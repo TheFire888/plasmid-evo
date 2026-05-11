@@ -86,7 +86,7 @@ genes = df.explode('cluster_rep').get_column('cluster_rep').unique()
 print(len(genes))
 cids = df[lvl].unique()
 
-gene_in_cid = df.group_by(pl.col('h0')).agg(pl.col('cluster_rep'))
+gene_in_cid = df.group_by(pl.col(lvl)).agg(pl.col('cluster_rep'))
 
 # genes_done = pl.read_csv(first_ami_path, separator='\t', has_header=False, new_columns=['cluster_rep', 'h0', 'ami']).select(['cluster_rep']).rows()
 
