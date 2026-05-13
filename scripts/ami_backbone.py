@@ -58,9 +58,8 @@ presence = (
     .select(["cluster_rep", "plasmid", "present"])
 )
 
-lvl = 'h1'
-ami_path = output_dir / f'{lvl}_ami_partII.tsv'
-first_ami_path = output_dir / f'{lvl}_ami.tsv'
+lvl = 'h4'
+ami_path = output_dir / f'{lvl}_ami.tsv'
 
 df = presence.join(
     plasmids_df,
@@ -89,11 +88,11 @@ cids = df[lvl].unique()
 
 gene_in_cid = df.group_by(pl.col(lvl)).agg(pl.col('cluster_rep'))
 
-genes_done = pl.read_csv(first_ami_path, separator='\t', has_header=False, new_columns=['cluster_rep', 'h0', 'ami']).select(['cluster_rep']).rows()
+# genes_done = pl.read_csv(first_ami_path, separator='\t', has_header=False, new_columns=['cluster_rep', 'h0', 'ami']).select(['cluster_rep']).rows()
 
 with ami_path.open(mode='wb', buffering=0) as f_out:
     for i, unique_gene in enumerate(genes):
-        if unique_gene in genes_done: continue
+        # if unique_gene in genes_done: continue
         logging.info(f"{i} {unique_gene}")
         gene_mask = (df['cluster_rep'].list.contains(unique_gene))
 
